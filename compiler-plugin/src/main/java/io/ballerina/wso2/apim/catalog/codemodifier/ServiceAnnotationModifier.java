@@ -92,12 +92,6 @@ public class ServiceAnnotationModifier
             }
 
             ServiceDeclarationNode serviceNode = (ServiceDeclarationNode) memberNode;
-//            // TODO: check service have openapi annot and embeded is false?
-//            if (!isSpecGenerationAllowed(serviceNode)) {
-//                updatedMembers.add(memberNode);
-//                continue;
-//            }
-
             String openAPIDef = generateOASForgetServiceDeclarationNode(
                     serviceNode, syntaxTree, semanticModel, project, currentPackage, document);
             MetadataNode metadataNode = getMetadataNode(serviceNode);

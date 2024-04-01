@@ -71,40 +71,4 @@ public class CommonUtils {
         }
         return Constants.SERVICE_CATALOG_METADATA_ANNOTATION_IDENTIFIER.equals(referenceNode.identifier().text());
     }
-
-//    public static boolean isOpenAPIInfoAnnotation(AnnotationNode annotationNode) {
-//        if (!(annotationNode.annotReference() instanceof QualifiedNameReferenceNode)) {
-//            return false;
-//        }
-//        QualifiedNameReferenceNode referenceNode = ((QualifiedNameReferenceNode) annotationNode.annotReference());
-//        if (!Constants.OPENAPI_PACKAGE_NAME.equals(referenceNode.modulePrefix().text())) {
-//            return false;
-//        }
-//        return Constants.OPENAPI_METADATA_ANNOTATION_IDENTIFIER.equals(referenceNode.identifier().text());
-//    }
-//    public static boolean isSpecGenerationAllowed(ServiceDeclarationNode serviceNode) {
-//        NodeList<AnnotationNode> annotations = getMetadataNode(serviceNode).annotations();
-//        for (AnnotationNode annotationNode: annotations) {
-//            if (!isOpenAPIInfoAnnotation(annotationNode)) {
-//                continue;
-//            }
-//
-//            Optional<MappingConstructorExpressionNode> annotationValueOpt = annotationNode.annotValue();
-//            if (annotationValueOpt.isEmpty()) {
-//                return true;
-//            }
-//            MappingConstructorExpressionNode annotationValue = annotationValueOpt.get();
-//            SeparatedNodeList<MappingFieldNode> existingFields = annotationValue.fields();
-//            for (MappingFieldNode field : existingFields) {
-//                if (field instanceof SpecificFieldNode) {
-//                    SpecificFieldNode specificField = (SpecificFieldNode) field;
-//                    String fieldName = specificField.fieldName().toString();
-//                    if (Constants.EMBED_FIELD.equals(fieldName.trim())) {
-//                        specificField.valueExpr().
-//                    }
-//                }
-//            }
-//        }
-//        return true;
-//    }
 }
