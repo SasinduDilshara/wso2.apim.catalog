@@ -1,12 +1,11 @@
 [package]
-[package]
 org = "sasindu"
 name = "wso2.apim.catalog"
 version = "0.1.0"
 distribution = "2201.9.0-20240326-110600-aca0cc0c"
 
-[[platform.java17.dependency]]
-groupId = "io.ballerina"
-artifactId = "wso2.apim.catalog-native"
-version = "@toml.version@"
-path = "../native/build/libs/wso2.apim.catalog-native-native-@project.version@.jar"
+#[[platform.java17.dependency]]
+#groupId = "io.ballerina"
+#artifactId = "wso2.apim.catalog-native"
+#version = "@toml.version@"
+#path = "../native/build/libs/wso2.apim.catalog-native-native-@project.version@.jar"

@@ -52,8 +52,8 @@
 //        return oasResult;
 //    }
 //
-//    public static OASResult generateOASForService(ServiceDeclarationNode serviceDeclarationNode, String openApiFilename,
-//                                        Path filepath, SemanticModel semanticModel, Project project) {
+//    public static OASResult generateOASForService(ServiceDeclarationNode serviceDeclarationNode,
+//                String openApiFilename, Path filepath, SemanticModel semanticModel, Project project) {
 //        OASGenerationMetaInfo.OASGenerationMetaInfoBuilder builder =
 //                new OASGenerationMetaInfo.OASGenerationMetaInfoBuilder();
 //        builder.setServiceDeclarationNode(serviceDeclarationNode)

@@ -1,6 +1,6 @@
 [plugin]
 id = "wso2.apim.catalog-compiler-plugin"
-class = "io.ballerina.wso2.apim.catalog.ServiceCatalogCompilerPlugin"
+class = "io.ballerina.wso2.apim.catalog.codemodifier.ServiceCatalogCodeModifier"
 
 [[dependency]]
-path = "../compiler-plugin/build/libs/http-compiler-plugin-@project.version@.jar"
+path = "../compiler-plugin/build/libs/wso2.apim.catalog-compiler-plugin-@project.version@.jar"

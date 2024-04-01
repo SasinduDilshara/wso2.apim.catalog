@@ -35,6 +35,14 @@ dependencies {
     implementation group: 'io.ballerina', name: 'ballerina-to-openapi', version: "${openapiVersion}"
 //    implementation group: 'io.ballerina', name: 'module-ballerina-openapi', version: "${openapiVersion}"
     implementation 'commons-io:commons-io:2.15.1'
+    implementation "io.swagger.core.v3:swagger-core"
+    implementation "io.swagger.core.v3:swagger-models"
+
+    implementation ("io.swagger.parser.v3:swagger-parser:${swaggerParserVersion}") {
+        exclude group: "io.swagger", module: "swagger-compat-spec-parser"
+        exclude group: "org.slf4j", module: "slf4j-ext"
+        exclude group: "javax.validation", module: "validation-api"
+    }
 }
 
 def excludePattern = '**/module-info.java'

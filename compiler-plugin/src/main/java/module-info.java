@@ -23,4 +23,6 @@ module io.ballerina.stdlib.http.compiler {
     requires io.ballerina.runtime;
     requires io.ballerina.openapi.service;
     requires org.apache.commons.io;
+    requires io.swagger.v3.core;
+    requires io.swagger.v3.oas.models;
 }
