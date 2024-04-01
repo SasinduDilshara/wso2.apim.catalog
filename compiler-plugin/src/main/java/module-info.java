@@ -21,6 +21,6 @@ module io.ballerina.stdlib.http.compiler {
     requires io.ballerina.tools.api;
     requires io.ballerina.parser;
     requires io.ballerina.runtime;
+    requires io.ballerina.openapi.service;
     requires org.apache.commons.io;
-    requires io.
 }

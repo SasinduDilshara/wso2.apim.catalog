@@ -71,10 +71,6 @@ subprojects {
     configurations {
         ballerinaStdLibs
     }
-
-    dependencies {
-        ballerinaStdLibs "io.ballerina:module-ballerina-openapi:${openapiVersion}"
-    }
 }
 
 def moduleVersion = project.version.replace("-SNAPSHOT", "")
