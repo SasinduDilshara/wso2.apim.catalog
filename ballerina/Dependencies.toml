@@ -5,12 +5,23 @@
 
 [ballerina]
 dependencies-toml-version = "2"
-distribution-version = "2201.9.0-20240326-110600-aca0cc0c"
+distribution-version = "2201.9.0-SNAPSHOT"
+
+[[package]]
+org = "ballerina"
+name = "jballerina.java"
+version = "0.0.0"
+modules = [
+	{org = "ballerina", packageName = "jballerina.java", moduleName = "jballerina.java"}
+]
 
 [[package]]
 org = "sasindu"
 name = "wso2.apim.catalog"
 version = "0.1.0"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"}
+]
 modules = [
 	{org = "sasindu", packageName = "wso2.apim.catalog", moduleName = "wso2.apim.catalog"}
 ]
