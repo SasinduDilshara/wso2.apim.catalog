@@ -4,3 +4,6 @@ class = "io.ballerina.wso2.apim.catalog.ServiceCatalogCompilerPlugin"
 
 [[dependency]]
 path = "../compiler-plugin/build/libs/wso2.apim.catalog-compiler-plugin-0.1.0.jar"
+
+[[dependency]]
+path = "./libs/ballerina-to-openapi-1.9.0-SNAPSHOT.jar"
