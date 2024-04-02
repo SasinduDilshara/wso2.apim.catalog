@@ -20,3 +20,21 @@ public annotation ServiceCatalogMetaData ServiceCatalogConfig on service;
 public type ServiceCatalogMetaData record {|
     byte[] openApiDefinition = [];
 |};
+
+public type ServiceArtifact record {|
+    string id;
+    string name;
+    string description = "";
+    string version = "_";
+    string serviceKey;
+    string serviceUrl;
+    string definitionType;
+    string securityType = "BASIC";
+    boolean mutualSSLEnabled = false;
+    int usage = 1;
+    string createdTime;
+    string lastUpdatedTime;
+    string md5;
+    string definitionUrl;
+|};
+

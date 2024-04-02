@@ -33,7 +33,6 @@ dependencies {
     implementation group: 'org.ballerinalang', name: 'ballerina-parser', version: "${ballerinaLangVersion}"
     implementation group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
     implementation group: 'io.ballerina', name: 'ballerina-to-openapi', version: "${openapiVersion}"
-//    implementation group: 'io.ballerina', name: 'module-ballerina-openapi', version: "${openapiVersion}"
     implementation 'commons-io:commons-io:2.15.1'
     implementation "io.swagger.core.v3:swagger-core"
     implementation "io.swagger.core.v3:swagger-models"
