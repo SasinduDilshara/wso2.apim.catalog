@@ -9,3 +9,15 @@ groupId = "io.ballerina"
 artifactId = "wso2.apim.catalog-native"
 version = "0.1.0"
 path = "../native/build/libs/wso2.apim.catalog-native-0.1.0.jar"
+
+[[platform.java17.dependency]]
+groupId = "com.fasterxml.jackson.core"
+artifactId = "jackson-core"
+version = "2.15.2"
+path = "lib/jackson-core-2.15.2.jar"
+
+[[platform.java17.dependency]]
+groupId = "com.fasterxml.jackson.core"
+artifactId = "jackson-databind"
+version = "2.15.2"
+path = "lib/jackson-databind-2.15.2.jar"
