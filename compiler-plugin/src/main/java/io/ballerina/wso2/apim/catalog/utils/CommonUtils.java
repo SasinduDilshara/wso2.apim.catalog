@@ -4,9 +4,14 @@ import io.ballerina.compiler.syntax.tree.AbstractNodeFactory;
 import io.ballerina.compiler.syntax.tree.AnnotationNode;
 import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.IdentifierToken;
+import io.ballerina.compiler.syntax.tree.ImportDeclarationNode;
+import io.ballerina.compiler.syntax.tree.ImportOrgNameNode;
+import io.ballerina.compiler.syntax.tree.ImportPrefixNode;
 import io.ballerina.compiler.syntax.tree.MappingConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingFieldNode;
 import io.ballerina.compiler.syntax.tree.MetadataNode;
+import io.ballerina.compiler.syntax.tree.Minutiae;
+import io.ballerina.compiler.syntax.tree.MinutiaeList;
 import io.ballerina.compiler.syntax.tree.NodeFactory;
 import io.ballerina.compiler.syntax.tree.NodeList;
 import io.ballerina.compiler.syntax.tree.NodeParser;
@@ -24,6 +29,8 @@ import java.nio.charset.Charset;
 import java.util.Base64;
 
 public class CommonUtils {
+    public static final MinutiaeList SINGLE_WS_MINUTIAE = getSingleWSMinutiae();
+
     public static MetadataNode getMetadataNode(ServiceDeclarationNode serviceNode) {
         return serviceNode.metadata().orElseGet(() -> {
             NodeList<AnnotationNode> annotations = NodeFactory.createNodeList();
@@ -37,7 +44,7 @@ public class CommonUtils {
     }
 
     public static AnnotationNode getServiceCatalogConfigAnnotation(String openApiDefinition) {
-        String configIdentifierString = Constants.SERVICE_CATALOG_PACKAGE_NAME + SyntaxKind.COLON_TOKEN.stringValue() +
+        String configIdentifierString = Constants.CATALOG + SyntaxKind.COLON_TOKEN.stringValue() +
                 Constants.SERVICE_CATALOG_METADATA_ANNOTATION_IDENTIFIER;
         IdentifierToken identifierToken = NodeFactory.createIdentifierToken(configIdentifierString);
         Token atToken = NodeFactory.createToken(SyntaxKind.AT_TOKEN);
@@ -61,14 +68,37 @@ public class CommonUtils {
                 String.format("base64 `%s`.cloneReadOnly()", encodedValue));
         return NodeFactory.createSpecificFieldNode(null, fieldName, colonToken, expressionNode);
     }
-    public static boolean isServiceCatalogConfigAnnotation(AnnotationNode annotationNode) {
+    public static boolean isServiceCatalogConfigAnnotationAvailable(AnnotationNode annotationNode) {
         if (!(annotationNode.annotReference() instanceof QualifiedNameReferenceNode)) {
             return false;
         }
         QualifiedNameReferenceNode referenceNode = ((QualifiedNameReferenceNode) annotationNode.annotReference());
-        if (!Constants.SERVICE_CATALOG_PACKAGE_NAME.equals(referenceNode.modulePrefix().text())) {
+        if (!Constants.CATALOG.equals(referenceNode.modulePrefix().text())) {
             return false;
         }
         return Constants.SERVICE_CATALOG_METADATA_ANNOTATION_IDENTIFIER.equals(referenceNode.identifier().text());
+    }
+
+    public static ImportDeclarationNode createImportDeclarationNodeForModule() {
+        Token importKeyword = AbstractNodeFactory.createIdentifierToken(Constants.IMPORT, SINGLE_WS_MINUTIAE,
+                SINGLE_WS_MINUTIAE);
+        Token slashToken = NodeFactory.createToken(SyntaxKind.SLASH_TOKEN);
+        Token orgNameToken = AbstractNodeFactory.createIdentifierToken(Constants.MODULE_NAME);
+        ImportOrgNameNode importOrgNameNode = NodeFactory.createImportOrgNameNode(orgNameToken, slashToken);
+        Token moduleNameToken = AbstractNodeFactory.createIdentifierToken(Constants.SERVICE_CATALOG_PACKAGE_NAME);
+        SeparatedNodeList<IdentifierToken> moduleNodeList = AbstractNodeFactory
+                .createSeparatedNodeList(moduleNameToken);
+        ImportPrefixNode prefix = NodeFactory.createImportPrefixNode(
+                AbstractNodeFactory.createIdentifierToken(Constants.AS, SINGLE_WS_MINUTIAE, SINGLE_WS_MINUTIAE),
+                NodeFactory.createIdentifierToken(Constants.CATALOG));
+        Token semicolon = NodeFactory.createToken(SyntaxKind.SEMICOLON_TOKEN);
+        return NodeFactory.createImportDeclarationNode(importKeyword, importOrgNameNode,
+                moduleNodeList, prefix, semicolon);
+    }
+
+    private static MinutiaeList getSingleWSMinutiae() {
+        Minutiae whitespace = AbstractNodeFactory.createWhitespaceMinutiae(" ");
+        MinutiaeList leading = AbstractNodeFactory.createMinutiaeList(whitespace);
+        return leading;
     }
 }

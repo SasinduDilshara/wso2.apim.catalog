@@ -65,6 +65,16 @@ ballerina {
     langVersion = ballerinaLangVersion
 }
 
+configurations {
+    externalJars
+}
+
+dependencies {
+    externalJars(group: 'io.ballerina', name: 'ballerina-to-openapi', version: "${openapiVersion}") {
+        transitive = false
+    }
+}
+
 task updateTomlFiles {
     doLast {
         def newBallerinaToml = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
@@ -72,6 +82,7 @@ task updateTomlFiles {
         ballerinaTomlFile.text = newBallerinaToml
 
         def newCompilerPluginToml = compilerPluginTomlFilePlaceHolder.text.replace("@project.version@", project.version)
+        newCompilerPluginToml = newCompilerPluginToml.replace("@openapi.version@", openapiVersion)
         compilerPluginTomlFile.text = newCompilerPluginToml
     }
 }

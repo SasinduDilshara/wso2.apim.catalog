@@ -18,13 +18,8 @@ import ballerina/jballerina.java;
 
 isolated function init() {
     setModule();
-    ServiceArtifact[] artifacts = getArtifacts();
 }
 
 isolated function setModule() = @java:Method {
     'class: "io.ballerina.wso2.apim.catalog.utils.ModuleUtils"
-} external;
-
-isolated function getArtifacts() returns ServiceArtifact[] = @java:Method {
-    'class: "io.ballerina.wso2.apim.catalog.ServiceCatalog"
 } external;
