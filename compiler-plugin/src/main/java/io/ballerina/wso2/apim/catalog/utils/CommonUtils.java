@@ -60,6 +60,7 @@ public class CommonUtils {
         SeparatedNodeList<MappingFieldNode> separatedNodeList = NodeFactory.createSeparatedNodeList(specificFieldNode);
         return NodeFactory.createMappingConstructorExpressionNode(openBraceToken, separatedNodeList, closeBraceToken);
     }
+
     public static SpecificFieldNode createOpenApiDefinitionField(String openApiDefinition) {
         IdentifierToken fieldName = AbstractNodeFactory.createIdentifierToken(Constants.OPEN_API_DEFINITION_FIELD);
         Token colonToken = AbstractNodeFactory.createToken(SyntaxKind.COLON_TOKEN);
@@ -68,6 +69,7 @@ public class CommonUtils {
                 String.format("base64 `%s`.cloneReadOnly()", encodedValue));
         return NodeFactory.createSpecificFieldNode(null, fieldName, colonToken, expressionNode);
     }
+
     public static boolean isServiceCatalogConfigAnnotationAvailable(AnnotationNode annotationNode) {
         if (!(annotationNode.annotReference() instanceof QualifiedNameReferenceNode)) {
             return false;

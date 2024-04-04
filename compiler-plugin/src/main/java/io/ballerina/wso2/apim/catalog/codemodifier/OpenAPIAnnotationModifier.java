@@ -29,7 +29,7 @@ import io.ballerina.projects.plugins.ModifierTask;
 import io.ballerina.projects.plugins.SourceModifierContext;
 import io.ballerina.tools.text.TextDocument;
 import io.ballerina.wso2.apim.catalog.utils.Constants;
-import io.swagger.v3.core.util.Json;
+import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.models.OpenAPI;
 
 import java.nio.file.Path;
@@ -203,7 +203,7 @@ public class OpenAPIAnnotationModifier implements ModifierTask<SourceModifierCon
         if (openApi.getInfo().getTitle() == null || openApi.getInfo().getTitle().equals(SLASH)) {
             openApi.getInfo().setTitle(normalizeTitle(openApiFilename));
         }
-        String openApiDefinition = Json.pretty(openApi);
+        String openApiDefinition = Yaml.pretty(openApi);
         return openApiDefinition;
     }
 

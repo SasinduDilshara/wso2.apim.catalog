@@ -35,6 +35,14 @@ dependencies {
     checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
     implementation group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
     implementation group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
+    implementation "io.swagger.core.v3:swagger-core"
+    implementation "io.swagger.core.v3:swagger-models"
+
+    implementation ("io.swagger.parser.v3:swagger-parser:${swaggerParserVersion}") {
+        exclude group: "io.swagger", module: "swagger-compat-spec-parser"
+        exclude group: "org.slf4j", module: "slf4j-ext"
+        exclude group: "javax.validation", module: "validation-api"
+    }
 }
 
 tasks.withType(JavaCompile) {

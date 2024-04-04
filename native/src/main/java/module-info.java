@@ -19,4 +19,9 @@
 module io.ballerina.stdlib.http {
     requires io.ballerina.lang;
     requires io.ballerina.runtime;
+    requires io.swagger.v3.core;
+    requires io.swagger.v3.oas.models;
+    requires swagger.parser;
+    requires swagger.parser.core;
+    requires swagger.parser.v3;
 }

@@ -73,12 +73,50 @@ dependencies {
     externalJars(group: 'io.ballerina', name: 'ballerina-to-openapi', version: "${openapiVersion}") {
         transitive = false
     }
+    externalJars(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: "${fasterxmlJacksonCoreVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${fasterxmlJacksonCoreVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${fasterxmlJacksonCoreVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${fasterxmlJacksonCoreVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: "${fasterxmlJacksonCoreVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'io.swagger.core.v3', name: 'swagger-models', version: "${swaggerVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'io.swagger.parser.v3', name: 'swagger-parser-core', version: "${swaggerParserVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'io.swagger.core.v3', name: 'swagger-core-jakarta', version: "${swaggerVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'io.swagger.parser.v3', name: 'swagger-parser-v3', version: "${swaggerParserVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'io.swagger.parser.v3', name: 'swagger-parser', version: "${swaggerParserVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'org.yaml', name: 'snakeyaml', version: "${snakeYamlversion}") {
+        transitive = false
+    }
 }
 
 task updateTomlFiles {
     doLast {
         def newBallerinaToml = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
         newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
+        newBallerinaToml = newBallerinaToml.replace("@fasterxml.version@", fasterxmlJacksonCoreVersion)
+        newBallerinaToml = newBallerinaToml.replace("@swagger.version@", swaggerVersion)
+        newBallerinaToml = newBallerinaToml.replace("@swagger.parser.version@", swaggerParserVersion)
+        newBallerinaToml = newBallerinaToml.replace("@fasterxml.version@", fasterxmlJacksonCoreVersion)
+        newBallerinaToml = newBallerinaToml.replace("@snakeyaml.version@", snakeYamlversion)
         ballerinaTomlFile.text = newBallerinaToml
 
         def newCompilerPluginToml = compilerPluginTomlFilePlaceHolder.text.replace("@project.version@", project.version)
