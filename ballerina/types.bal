@@ -198,14 +198,13 @@ public type ServiceCatalogMetaData record {|
 |};
 
 public type ServiceArtifact record {|
-    string id;
     string name;
     string description = "";
     string version = "_";
     string serviceKey;
     string serviceUrl;
-    string definitionType;
-    string securityType = "BASIC";
+    DefinitionType definitionType;
+    SecurityType securityType = "BASIC";
     boolean mutualSSLEnabled = false;
     int usage = 1;
     string createdTime;
@@ -214,3 +213,21 @@ public type ServiceArtifact record {|
     string definitionUrl;
     string definitionFile;
 |};
+
+public enum DefinitionType {
+    OAS2,
+    OAS3,
+    WSDL1,
+    WSDL2,
+    GRAPHQL_SDL,
+    ASYNC_API
+};
+
+public enum SecurityType {
+    BASIC,
+    DIGEST,
+    OAUTH2,
+    X509,
+    API_KEY,
+    NONE
+};

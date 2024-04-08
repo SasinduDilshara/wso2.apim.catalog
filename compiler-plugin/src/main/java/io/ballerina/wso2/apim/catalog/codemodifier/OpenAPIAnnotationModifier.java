@@ -59,6 +59,7 @@ public class OpenAPIAnnotationModifier implements ModifierTask<SourceModifierCon
         if (diagnosticContainsErrors(context)) {
             return;
         }
+        context.currentPackage().compilationOptions().disableSyntaxTree();
         Package currentPackage = context.currentPackage();
         for (Module module: currentPackage.modules()) {
             Collection<DocumentId> documentIds = module.documentIds();

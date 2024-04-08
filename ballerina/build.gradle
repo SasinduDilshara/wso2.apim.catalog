@@ -70,7 +70,7 @@ configurations {
 }
 
 dependencies {
-    externalJars(group: 'io.ballerina', name: 'ballerina-to-openapi', version: "${openapiVersion}") {
+    externalJars(group: 'io.ballerina.openapi', name: 'ballerina-to-openapi', version: "${openapiVersion}") {
         transitive = false
     }
     externalJars(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: "${fasterxmlJacksonCoreVersion}") {
@@ -165,10 +165,10 @@ task deleteDependencyTomlFiles {
 
 updateTomlFiles.dependsOn copyStdlibs
 
+build.dependsOn deleteDependencyTomlFiles
 build.dependsOn "generatePomFileForMavenPublication"
 build.dependsOn ":${packageName}-native:build"
 build.dependsOn ":${packageName}-compiler-plugin:build"
-build.dependsOn deleteDependencyTomlFiles
 
 test.dependsOn ":${packageName}-native:build"
 test.dependsOn ":${packageName}-compiler-plugin:build"

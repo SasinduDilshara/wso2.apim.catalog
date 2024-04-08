@@ -17,7 +17,6 @@ public class Constants {
     public static final String MD5 = "md5";
     public static final String DEFINITION_URL = "definitionUrl";
     public static final String SLASH = "/";
-    public static final String DEFAULT_DESCRIPTION = "";
     public static final String SERVICE_CATALOG_PACKAGE_NAME = "wso2.apim.catalog";
     public static final String SERVICE_CATALOG_METADATA_ANNOTATION_IDENTIFIER = "ServiceCatalogConfig";
     public static final String COLON = ":";
@@ -29,10 +28,19 @@ public class Constants {
     public static final int SEED = 5;
     public static final String HOST = "host";
     public static final String LOCALHOST = "localhost";
-    public static final String HTTP = "http://";
-    public static final String HTTPS = "https://";
     public static final String PORT = "port";
     public static final String OAS3 = "OAS3";
-    public static final String OAS2 = "OAS2";
     public static final String BASIC = "BASIC";
+    public static final String NONE = "NONE";
+    public static final String OAUTH2 = "OAUTH2";
+    public static final String AUTH = "auth";
+    public static final String CONFIG = "config";
+    public static final String SECURE_SOCKET = "secureSocket";
+    public static final String MUTUAL_SSL = "mutualSsl";
+    public static final String UTF8 = "UTF-8";
+    public static final String MD5_ALGO_NAME = "MD5";
+    public static final String FILE_AUTH = "fileUserStoreConfig";
+    public static final String LDAP_AUTH = "ldapUserStoreConfig";
+    public static final String JWT_AUTH = "jwtValidatorConfig";
+    public static final String OAUTH2_AUTH = "oauth2IntrospectionConfig";
 }
