@@ -8,6 +8,19 @@ dependencies-toml-version = "2"
 distribution-version = "2201.9.0-SNAPSHOT"
 
 [[package]]
+org = "admin"
+name = "sample_project_1"
+version = "0.1.0"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerinax", name = "wso2.apim.catalog"},
+	{org = "test", name = "helper_services"}
+]
+modules = [
+	{org = "admin", packageName = "sample_project_1", moduleName = "sample_project_1"}
+]
+
+[[package]]
 org = "ballerina"
 name = "auth"
 version = "2.10.0"
@@ -36,9 +49,6 @@ name = "constraint"
 version = "1.5.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
-]
-modules = [
-	{org = "ballerina", packageName = "constraint", moduleName = "constraint"}
 ]
 
 [[package]]
@@ -101,17 +111,11 @@ dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.value"}
 ]
-modules = [
-	{org = "ballerina", packageName = "io", moduleName = "io"}
-]
 
 [[package]]
 org = "ballerina"
 name = "jballerina.java"
 version = "0.0.0"
-modules = [
-	{org = "ballerina", packageName = "jballerina.java", moduleName = "jballerina.java"}
-]
 
 [[package]]
 org = "ballerina"
@@ -221,9 +225,6 @@ dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.int"}
 ]
-modules = [
-	{org = "ballerina", packageName = "mime", moduleName = "mime"}
-]
 
 [[package]]
 org = "ballerina"
@@ -236,9 +237,6 @@ dependencies = [
 	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "time"},
 	{org = "ballerina", name = "url"}
-]
-modules = [
-	{org = "ballerina", packageName = "oauth2", moduleName = "oauth2"}
 ]
 
 [[package]]
@@ -282,9 +280,6 @@ version = "2.4.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
-modules = [
-	{org = "ballerina", packageName = "url", moduleName = "url"}
-]
 
 [[package]]
 org = "ballerinax"
@@ -301,5 +296,20 @@ dependencies = [
 ]
 modules = [
 	{org = "ballerinax", packageName = "wso2.apim.catalog", moduleName = "wso2.apim.catalog"}
+]
+
+[[package]]
+org = "test"
+name = "helper_services"
+version = "0.1.0"
+dependencies = [
+	{org = "ballerina", name = "constraint"},
+	{org = "ballerina", name = "file"},
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "time"}
+]
+modules = [
+	{org = "test", packageName = "helper_services", moduleName = "helper_services"}
 ]
 

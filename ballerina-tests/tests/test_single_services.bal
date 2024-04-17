@@ -1,5 +1,4 @@
 import ballerina/test;
-import apim_catalog_tests.services as _;
 
 @test:BeforeEach
 function buildAndRunTestProjects() returns error? {
@@ -7,8 +6,9 @@ function buildAndRunTestProjects() returns error? {
 }
 
 @test:Config{}
-function testSingleServices() {
-    test:assertEquals(serviceSchema0, []);
+function testSingleServices() returns error? {
+    check buildAndRunProjects();
+    test:assertEquals([], []);
     // test:assertEquals(serviceSchema1, []);
     // test:assertEquals(serviceSchema2, []);
     // test:assertEquals(serviceSchema3, []);

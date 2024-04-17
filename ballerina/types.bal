@@ -211,7 +211,7 @@ public type ServiceArtifact record {|
     string lastUpdatedTime;
     string md5;
     string definitionUrl;
-    string definitionFile;
+    string definitionFileContent = "";
 |};
 
 public enum DefinitionType {

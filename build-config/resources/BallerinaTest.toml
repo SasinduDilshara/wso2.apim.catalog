@@ -3,6 +3,12 @@ org = "ballerinax"
 name = "apim_catalog_tests"
 version = "@toml.version@"
 
+[[dependency]]
+org = "test"
+name = "helper_services"
+version = "0.1.0"
+repository="local"
+
 [platform.java17]
 graalvmCompatible = true
 

@@ -31,3 +31,38 @@ public type Service record {
     string md5?;
     string definitionUrl?;
 };
+
+public type ServiceArtifact record {|
+    string name;
+    string description = "";
+    string version = "_";
+    string serviceKey;
+    string serviceUrl;
+    DefinitionType definitionType;
+    SecurityType securityType = "BASIC";
+    boolean mutualSSLEnabled = false;
+    int usage = 1;
+    string createdTime;
+    string lastUpdatedTime;
+    string md5;
+    string definitionUrl;
+    string definitionFileContent = "";
+|};
+
+public enum DefinitionType {
+    OAS2,
+    OAS3,
+    WSDL1,
+    WSDL2,
+    GRAPHQL_SDL,
+    ASYNC_API
+};
+
+public enum SecurityType {
+    BASIC,
+    DIGEST,
+    OAUTH2,
+    X509,
+    API_KEY,
+    NONE
+};

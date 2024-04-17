@@ -33,7 +33,7 @@ import static io.ballerina.wso2.apim.catalog.utils.Constants.SERVICE_CATALOG_MET
 import static io.ballerina.wso2.apim.catalog.utils.Constants.SLASH;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.UTF8;
 
-public class CommonUtils {
+public class Utils {
     private static SecureRandom random = new SecureRandom();
 
     public static String createMd5Hash(String string) {
@@ -75,6 +75,7 @@ public class CommonUtils {
     }
 
     public static OpenAPI getOpenApiDefinition(BMap<BString, Object> annotation) {
+
         BArray openApiDef = (BArray) annotation.get(StringUtils.fromString(OPENAPI_DEFINITION));
         byte[] openApiDefByteStream = openApiDef.getByteArray();
         String string = new String(openApiDefByteStream, StandardCharsets.UTF_8);
@@ -98,11 +99,13 @@ public class CommonUtils {
     }
 
     public static BMap<BString, Object> getModuleAnnotation(BMap<BString, Object> annotations) {
-        for (BString key: annotations.getKeys()) {
-            String[] annotNames = StringUtils.getStringValue(key).split(COLON);
-            if (annotNames[0].equals(COMPLETE_MODULE_NAME) &&
-                    annotNames[annotNames.length - 1].equals(SERVICE_CATALOG_METADATA_ANNOTATION_IDENTIFIER)) {
-                return (BMap<BString, Object>) annotations.get(key);
+        if (annotations != null) {
+            for (BString key : annotations.getKeys()) {
+                String[] annotNames = StringUtils.getStringValue(key).split(COLON);
+                if (annotNames[0].equals(COMPLETE_MODULE_NAME) &&
+                        annotNames[annotNames.length - 1].equals(SERVICE_CATALOG_METADATA_ANNOTATION_IDENTIFIER)) {
+                    return (BMap<BString, Object>) annotations.get(key);
+                }
             }
         }
         return null;
@@ -119,11 +122,13 @@ public class CommonUtils {
     }
 
     public static BMap<BString, Object> getHttpAnnotation(BMap<BString, Object> annotations) {
-        for (BString key: annotations.getKeys()) {
-            String[] annotNames = StringUtils.getStringValue(key).split(COLON);
-            if (annotNames[0].equals(HTTP_MODULE_NAME) &&
-                    annotNames[annotNames.length - 1].equals(HTTP_ANNOTATION_NAME)) {
-                return (BMap<BString, Object>) annotations.get(key);
+        if (annotations != null) {
+            for (BString key : annotations.getKeys()) {
+                String[] annotNames = StringUtils.getStringValue(key).split(COLON);
+                if (annotNames[0].equals(HTTP_MODULE_NAME) &&
+                        annotNames[annotNames.length - 1].equals(HTTP_ANNOTATION_NAME)) {
+                    return (BMap<BString, Object>) annotations.get(key);
+                }
             }
         }
         return null;

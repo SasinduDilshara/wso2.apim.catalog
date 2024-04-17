@@ -5,8 +5,10 @@ import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.creators.TypeCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.ArrayType;
+import io.ballerina.runtime.api.types.ObjectType;
 import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
@@ -18,17 +20,19 @@ import io.swagger.v3.oas.models.OpenAPI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.createMd5Hash;
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.generateBasePath;
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.generateRandomHash;
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.getDefinitionType;
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.getHostname;
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.getHttpAnnotation;
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.getModuleAnnotation;
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.getOpenApiDefinition;
-import static io.ballerina.wso2.apim.catalog.utils.CommonUtils.getSecurityType;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.createMd5Hash;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.generateBasePath;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.generateRandomHash;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.getDefinitionType;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.getHostname;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.getHttpAnnotation;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.getModuleAnnotation;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.getOpenApiDefinition;
+import static io.ballerina.wso2.apim.catalog.utils.Utils.getSecurityType;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.COLON;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.CONFIG;
+import static io.ballerina.wso2.apim.catalog.utils.Constants.DEFAULT_STRING;
+import static io.ballerina.wso2.apim.catalog.utils.Constants.DEFINITION_FILE_CONTENT;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.DEFINITION_TYPE;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.DEFINITION_URL;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.DESCRIPTION;
@@ -38,7 +42,6 @@ import static io.ballerina.wso2.apim.catalog.utils.Constants.MUTUAL_SSL;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.MUTUAL_SSL_ENABLED;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.NAME;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.NONE;
-import static io.ballerina.wso2.apim.catalog.utils.Constants.OPENAPI_DEFINITION;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.PORT;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.SECURE_SOCKET;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.SECURITY_TYPE;
@@ -58,13 +61,22 @@ public class ServiceCatalog {
         for (Artifact artifact : env.getRepository().getArtifacts()) {
             BMap<BString, Object> artifactValues = ValueCreator.createRecordValue(recordType);
             Object listenerDetails = artifact.getDetail(Constants.LISTENERS);
-            Object annotationDetails = artifact.getDetail(Constants.ANNOTATIONS);
+            Object annotationDetails = getAnnotations(artifact.getDetail(Constants.SERVICE));
             Object attachPointDetails = artifact.getDetail(Constants.ATTACH_POINT);
 
             updateMetadata(env, artifactValues, listenerDetails, annotationDetails, attachPointDetails);
             arrayValue.append(artifactValues);
         }
         return arrayValue;
+    }
+
+    private static Object getAnnotations(Object serviceObj) {
+        if (serviceObj == null) {
+            return null;
+        }
+        BObject serviceBObj = (BObject) serviceObj;
+        ObjectType impliedType = (ObjectType) TypeUtils.getImpliedType(serviceBObj.getOriginalType());
+        return impliedType.getAnnotations();
     }
 
     private static void updateMetadata(Environment env, BMap<BString, Object> artifactValues, Object listenerDetails,
@@ -82,7 +94,8 @@ public class ServiceCatalog {
         String name = StringUtils.getStringValue(artifactValues.get(StringUtils.fromString(NAME)));
         String version = StringUtils.getStringValue(artifactValues.get(StringUtils.fromString(VERSION)));
         String definitionType = StringUtils.getStringValue(artifactValues.get(StringUtils.fromString(DEFINITION_TYPE)));
-        String openapiDef = StringUtils.getStringValue(artifactValues.get(StringUtils.fromString(OPENAPI_DEFINITION)));
+        String openapiDef = StringUtils.getStringValue(artifactValues.get(StringUtils
+                .fromString(DEFINITION_FILE_CONTENT)));
 
         String string = new StringBuilder(name).append(version).append(definitionType).append(openapiDef).toString();
         artifactValues.put(StringUtils.fromString(MD5), StringUtils.fromString(createMd5Hash(string)));
@@ -133,11 +146,11 @@ public class ServiceCatalog {
     private static void updateServiceUrl(BMap<BString, Object> artifactValues, HttpServiceConfig httpServiceConfig) {
         String basePath = httpServiceConfig.basePath.equals(LOCALHOST) ? "" : httpServiceConfig.basePath;
         artifactValues.put(StringUtils.fromString(SERVICE_URL),
-                new StringBuilder().append(httpServiceConfig.host).
-                        append(COLON).append(httpServiceConfig.port).append(basePath).toString());
+                StringUtils.fromString(new StringBuilder().append(httpServiceConfig.host).
+                        append(COLON).append(httpServiceConfig.port).append(basePath).toString()));
         artifactValues.put(StringUtils.fromString(DEFINITION_URL),
-                new StringBuilder().append(httpServiceConfig.host).
-                        append(COLON).append(httpServiceConfig.port).append(basePath).toString());
+                StringUtils.fromString(new StringBuilder().append(httpServiceConfig.host).
+                        append(COLON).append(httpServiceConfig.port).append(basePath).toString()));
     }
 
     private static HttpServiceConfig updateHostAndPortAndBasePath(Object listenerDetails, Object attachPointDetails,
@@ -166,6 +179,12 @@ public class ServiceCatalog {
         } else {
             artifactValues.put(StringUtils.fromString(VERSION), StringUtils
                     .fromString(env.getCurrentModule().getMajorVersion()));
+            artifactValues.put(StringUtils.fromString(DEFINITION_FILE_CONTENT),
+                    StringUtils.fromString(DEFAULT_STRING));
+            artifactValues.put(StringUtils.fromString(DESCRIPTION),
+                    StringUtils.fromString(DEFAULT_STRING));
+            artifactValues.put(StringUtils.fromString(SERVICE_KEY),
+                    StringUtils.fromString(DEFAULT_STRING));
         }
 
         if (httpAnnotation != null) {
@@ -181,15 +200,17 @@ public class ServiceCatalog {
                                                       BMap<BString, Object> artifactValues) {
         OpenAPI openApiDef = getOpenApiDefinition(moduleAnnotation);
         String openApiDefVersion = openApiDef.getInfo().getVersion();
+        String description = openApiDef.getInfo().getDescription();
+        String title = openApiDef.getInfo().getTitle();
 
-        artifactValues.put(StringUtils.fromString(OPENAPI_DEFINITION),
+        artifactValues.put(StringUtils.fromString(DEFINITION_FILE_CONTENT),
                 StringUtils.fromString(Yaml.pretty(openApiDef)));
         artifactValues.put(StringUtils.fromString(VERSION),
-                StringUtils.fromString(openApiDefVersion));
+                StringUtils.fromString(openApiDefVersion != null ? openApiDefVersion : DEFAULT_STRING));
         artifactValues.put(StringUtils.fromString(DESCRIPTION),
-                StringUtils.fromString(openApiDef.getInfo().getDescription()));
+                StringUtils.fromString(description != null ? description : DEFAULT_STRING));
         artifactValues.put(StringUtils.fromString(SERVICE_KEY),
-                StringUtils.fromString(openApiDef.getInfo().getTitle() + COLON + openApiDefVersion));
+                StringUtils.fromString(title != null ? title : DEFAULT_STRING + COLON + openApiDefVersion));
     }
 
     static class HttpServiceConfig {
