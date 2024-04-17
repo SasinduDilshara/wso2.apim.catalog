@@ -1,18 +1,14 @@
 import ballerina/http;
 import ballerina/io;
-import ballerina/file;
 import ballerina/log;
 
-string currentDir = file:getCurrentDir();
-string ballerinaTestDir = string `${check file:parentPath(currentDir)}/ballerina-tests/tests`;
-string artifactPath = string `${ballerinaTestDir}/generated_artifacts`;
 string artifactFilename = string `${artifactPath}/artifacts.json`;
 
-service / on new http:Listener(8081) {
+service / on new http:Listener(8083) {
     json[] artifacts = [];
     
     function init() returns error? {
-        log:printInfo("Starting the test server on port 8080");
+        log:printInfo("Starting the test server on port 8083");
     }
     
     resource function post services(ServiceSchema artifact) returns Service|error? {
