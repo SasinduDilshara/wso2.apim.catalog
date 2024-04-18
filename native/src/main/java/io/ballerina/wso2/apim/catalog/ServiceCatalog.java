@@ -2,11 +2,13 @@ package io.ballerina.wso2.apim.catalog;
 
 import io.ballerina.runtime.api.Artifact;
 import io.ballerina.runtime.api.Environment;
+import io.ballerina.runtime.api.Module;
 import io.ballerina.runtime.api.creators.TypeCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.ObjectType;
 import io.ballerina.runtime.api.types.RecordType;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
@@ -53,16 +55,24 @@ import static io.ballerina.wso2.apim.catalog.utils.Constants.VERSION;
 public class ServiceCatalog {
 
     public static BArray getArtifacts(Environment env) {
+        Module currentModule = env.getCurrentModule();
         RecordType recordType = TypeCreator.createRecordType(Constants.SERVICE_ARTIFACT_TYPE_NAME,
-                env.getCurrentModule(), 0, false, 0);
+                currentModule, 0, false, 0);
         ArrayType arrayType = TypeCreator.createArrayType(recordType);
         BArray arrayValue = ValueCreator.createArrayValue(arrayType);
 
         for (Artifact artifact : env.getRepository().getArtifacts()) {
+            Object serviceObj = artifact.getDetail(Constants.SERVICE);
+            Type originalType = ((BObject) serviceObj).getOriginalType();
+            Module module = originalType.getPackage();
+            if (module != null && module.equals(currentModule)) {
+                continue;
+            }
+
             BMap<BString, Object> artifactValues = ValueCreator.createRecordValue(recordType);
             Object listenerDetails = artifact.getDetail(Constants.LISTENERS);
-            Object annotationDetails = getAnnotations(artifact.getDetail(Constants.SERVICE));
             Object attachPointDetails = artifact.getDetail(Constants.ATTACH_POINT);
+            Object annotationDetails = getAnnotations(serviceObj);
 
             updateMetadata(env, artifactValues, listenerDetails, annotationDetails, attachPointDetails);
             arrayValue.append(artifactValues);

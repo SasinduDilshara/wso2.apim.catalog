@@ -14,6 +14,11 @@ configurable int port = 5050;
 configurable string clientSecureSocketpath = "";
 configurable string clientSecureSocketpassword = "";
 
+final Client apimClient = check new (serviceUrl = serviceUrl, config = {
+    auth: {username: user, password, clientId, clientSecret, tokenUrl, clientConfig: {
+        secureSocket: {cert: {path: clientSecureSocketpath, password: clientSecureSocketpassword}}}}
+    });
+
 listener Listener 'listener = new Listener(port);
 
 service / on 'listener {
@@ -21,12 +26,6 @@ service / on 'listener {
 }
 
 function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
-    final Client apimClient = check new (serviceUrl = serviceUrl, config = {
-            auth: {username: user, password, clientId, clientSecret, tokenUrl, clientConfig: {
-                secureSocket: {cert: {path: clientSecureSocketpath, password: clientSecureSocketpassword}}}}
-            });
-    // final http:Client apimClient = check new (serviceUrl);
-
     check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/pubstart", artifacts.toJson());
     boolean errorFound = false;
     error? e = null;
