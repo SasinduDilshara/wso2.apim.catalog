@@ -3,6 +3,15 @@ org = "ballerinax"
 name = "apim_catalog_tests"
 version = "0.1.0"
 
+[[dependency]]
+org = "ballerinax"
+name = "wso2.apim.catalog"
+version = "0.1.0"
+repository="local"
+
+[build-options]
+remoteManagement=true
+
 [platform.java17]
 graalvmCompatible = true
 
