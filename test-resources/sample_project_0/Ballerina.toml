@@ -10,11 +10,5 @@ name = "wso2.apim.catalog"
 version = "0.1.0"
 repository="local"
 
-[[dependency]]
-org = "test"
-name = "helper_services"
-version = "0.1.0"
-repository="local"
-
 [build-options]
 remoteManagement=true

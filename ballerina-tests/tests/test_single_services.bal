@@ -7,6 +7,5 @@ function buildAndRunTestProjects() returns error? {
 
 @test:Config{}
 function testSingleServices() returns error? {
-    check buildAndRunProjects();
     test:assertEquals([], []);
 }

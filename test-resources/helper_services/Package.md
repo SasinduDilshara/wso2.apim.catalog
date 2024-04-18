@@ -1,1 +1,0 @@
-wso2.apim.catalog.helper.services

@@ -1,19 +1,23 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
+import ballerina/mime;
 
-string artifactFilename = string `${artifactPath}/artifacts.json`;
 
-service / on new http:Listener(8083) {
+service / on new http:Listener(8080) {
     json[] artifacts = [];
+    string artifactFilename = string `${artifactPath}/artifacts_0.json`;
     
     function init() returns error? {
-        log:printInfo("Starting the test server on port 8083");
+        log:printInfo("Starting the test server on port 8080");
     }
     
-    resource function post services(ServiceSchema artifact) returns Service|error? {
+    resource function post services(http:Request req) returns json|error {
+        mime:Entity[] bodyParts = check req.getBodyParts();
+        json artifact = check bodyParts[0].getJson();
         self.artifacts.push(artifact.toJson());
-        check io:fileWriteJson(artifactFilename, self.artifacts);
+        self.artifacts.push(artifact.toJson());
+        check io:fileWriteJson(self.artifactFilename, self.artifacts);
 
         // return a dummy Service object
         return {

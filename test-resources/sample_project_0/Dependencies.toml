@@ -13,8 +13,7 @@ name = "sample_project_1"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
-	{org = "ballerinax", name = "wso2.apim.catalog"},
-	{org = "test", name = "helper_services"}
+	{org = "ballerinax", name = "wso2.apim.catalog"}
 ]
 modules = [
 	{org = "admin", packageName = "sample_project_1", moduleName = "sample_project_1"}
@@ -290,26 +289,12 @@ dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "mime"},
 	{org = "ballerina", name = "oauth2"},
 	{org = "ballerina", name = "url"}
 ]
 modules = [
 	{org = "ballerinax", packageName = "wso2.apim.catalog", moduleName = "wso2.apim.catalog"}
-]
-
-[[package]]
-org = "test"
-name = "helper_services"
-version = "0.1.0"
-dependencies = [
-	{org = "ballerina", name = "constraint"},
-	{org = "ballerina", name = "file"},
-	{org = "ballerina", name = "http"},
-	{org = "ballerina", name = "io"},
-	{org = "ballerina", name = "time"}
-]
-modules = [
-	{org = "test", packageName = "helper_services", moduleName = "helper_services"}
 ]
 

@@ -2,6 +2,7 @@ import ballerina/http;
 import ballerina/jballerina.java;
 import ballerina/oauth2 as _;
 import ballerina/log;
+import ballerina/io;
 
 configurable string serviceUrl = "https://apis.wso2.com/api/service-catalog/v1";
 configurable string user = "?";
@@ -10,9 +11,8 @@ configurable string clientId = "?";
 configurable string clientSecret = "?";
 configurable string tokenUrl = "https://localhost:9443/oauth2/token";
 configurable int port = 5050;
-
-// final Client apimClient = check new (serviceUrl = serviceUrl, config = {auth: {username: user, password, clientId, clientSecret, tokenUrl}});
-http:Client apimClient = check new(serviceUrl);
+configurable string clientSecureSocketpath = "";
+configurable string clientSecureSocketpassword = "";
 
 listener Listener 'listener = new Listener(port);
 
@@ -20,33 +20,17 @@ service / on 'listener {
 
 }
 
-public class Listener {
-    int port;
-    public function 'start() returns error? {
-        ServiceArtifact[] artifacts = getArtifacts();
-        check publishArtifacts(artifacts);
-    }
-
-    public function gracefulStop() returns error? {
-    }
-
-    public function immediateStop() returns error? {
-    }
-
-    public function detach(service object {} s) returns error? {
-    }
-
-    public function attach(service object {} s, string[]? name = ()) returns error? {
-    }
-
-    public function init(int port) {
-        self.port = port;
-    }
-}
-
 function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
+    final Client apimClient = check new (serviceUrl = serviceUrl, config = {
+            auth: {username: user, password, clientId, clientSecret, tokenUrl, clientConfig: {
+                secureSocket: {cert: {path: clientSecureSocketpath, password: clientSecureSocketpassword}}}}
+            });
+    // final http:Client apimClient = check new (serviceUrl);
+
+    check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/pubstart", artifacts.toJson());
     boolean errorFound = false;
     error? e = null;
+
     foreach ServiceArtifact artifact in artifacts {
         string name = artifact.name;
         string definitionFileContent = artifact.definitionFileContent;
@@ -77,8 +61,15 @@ function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
 
     if errorFound {
         log:printError("Error found while publishing artifacts: ", e);
+        if e is http:ApplicationResponseError {
+            check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/puberror1", (<error> e).detail().toString());
+        } else {
+            check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/puberror2", (<error> e).message());
+        }
         return e;
     }
+
+    check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/pubsuccess", artifacts.toJson());
 }
 
 isolated function getArtifacts() returns ServiceArtifact[] = @java:Method {

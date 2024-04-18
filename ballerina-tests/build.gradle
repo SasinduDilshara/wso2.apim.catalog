@@ -91,7 +91,6 @@ task initializeVariables {
 }
 
 def ballerinaPackagePath = "ballerina"
-def helperResourcePath = "test-resources/helper_services"
 
 task publishTestResourcePackageToLocal {
     dependsOn("::${packageName}-ballerina:build")
@@ -106,26 +105,7 @@ task publishTestResourcePackageToLocal {
         }
 
         exec {
-            workingDir "${project.rootDir}/${helperResourcePath}"
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "${distributionBinPath}/bal.bat pack && exit  %%ERRORLEVEL%%"
-            } else {
-                commandLine 'sh', '-c', "${distributionBinPath}/bal pack"
-            }
-        }
-
-        exec {
             workingDir "${project.rootDir}/${ballerinaPackagePath}"
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "${distributionBinPath}/bal.bat push --repository=local" +
-                        " && exit %%ERRORLEVEL%%"
-            } else {
-                commandLine 'sh', '-c', "${distributionBinPath}/bal push --repository=local"
-            }
-        }
-
-        exec {
-            workingDir "${project.rootDir}/${helperResourcePath}"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                 commandLine 'cmd', '/c', "${distributionBinPath}/bal.bat push --repository=local" +
                         " && exit %%ERRORLEVEL%%"
