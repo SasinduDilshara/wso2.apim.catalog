@@ -170,7 +170,10 @@ public class OpenAPIAnnotationModifier implements ModifierTask<SourceModifierCon
         for (MappingFieldNode field : existingFields) {
             if (field instanceof SpecificFieldNode) {
                 String fieldName = ((SpecificFieldNode) field).fieldName().toString();
-                openApiDefAvailable = Constants.OPEN_API_DEFINITION_FIELD.equals(fieldName.trim());
+                if (Constants.OPEN_API_DEFINITION_FIELD.equals(fieldName.trim())) {
+                    openApiDefAvailable = true;
+                    field = createOpenApiDefinitionField(openAPIDef);
+                }
             }
             fields.add(field);
             fields.add(separator);

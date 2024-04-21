@@ -22,6 +22,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static io.ballerina.wso2.apim.catalog.utils.Constants.HTTP_ORG_NAME;
 import static io.ballerina.wso2.apim.catalog.utils.Utils.createMd5Hash;
 import static io.ballerina.wso2.apim.catalog.utils.Utils.generateBasePath;
 import static io.ballerina.wso2.apim.catalog.utils.Utils.generateRandomHash;
@@ -69,8 +70,12 @@ public class ServiceCatalog {
                 continue;
             }
 
-            BMap<BString, Object> artifactValues = ValueCreator.createRecordValue(recordType);
             Object listenerDetails = artifact.getDetail(Constants.LISTENERS);
+            if (!isHttpServiceNode(listenerDetails)) {
+                continue;
+            }
+
+            BMap<BString, Object> artifactValues = ValueCreator.createRecordValue(recordType);
             Object attachPointDetails = artifact.getDetail(Constants.ATTACH_POINT);
             Object annotationDetails = getAnnotations(serviceObj);
 
@@ -78,6 +83,11 @@ public class ServiceCatalog {
             arrayValue.append(artifactValues);
         }
         return arrayValue;
+    }
+
+    private static boolean isHttpServiceNode(Object listenerDetails) {
+        return (((ArrayList<BObject>) listenerDetails).get(0)).getOriginalType().
+                getPackage().getName().equals(HTTP_ORG_NAME);
     }
 
     private static Object getAnnotations(Object serviceObj) {

@@ -42,4 +42,5 @@ public class Constants {
     public static final String JWT_AUTH = "jwtValidatorConfig";
     public static final String OAUTH2_AUTH = "oauth2IntrospectionConfig";
     public static final String DEFAULT_STRING = "";
+    public static final String HTTP_ORG_NAME = "http";
 }

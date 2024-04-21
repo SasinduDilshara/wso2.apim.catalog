@@ -15,10 +15,8 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/io;
 
 isolated function init() {
-    io:println("Init Print - ", serviceUrl);
     setModule();
 }
 

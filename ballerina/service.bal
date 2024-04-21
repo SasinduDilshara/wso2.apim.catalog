@@ -1,8 +1,6 @@
-import ballerina/http;
 import ballerina/jballerina.java;
 import ballerina/oauth2 as _;
 import ballerina/log;
-import ballerina/io;
 
 configurable string serviceUrl = "https://apis.wso2.com/api/service-catalog/v1";
 configurable string user = "?";
@@ -26,7 +24,6 @@ service / on 'listener {
 }
 
 function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
-    check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/pubstart", artifacts.toJson());
     boolean errorFound = false;
     error? e = null;
 
@@ -60,15 +57,8 @@ function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
 
     if errorFound {
         log:printError("Error found while publishing artifacts: ", e);
-        if e is http:ApplicationResponseError {
-            check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/puberror1", (<error> e).detail().toString());
-        } else {
-            check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/puberror2", (<error> e).message());
-        }
         return e;
     }
-
-    check io:fileWriteJson("/Users/admin/Desktop/Test-Codes/fork-Repos/wso2.apim.catalog/ballerina-tests/tests/trash/pubsuccess", artifacts.toJson());
 }
 
 isolated function getArtifacts() returns ServiceArtifact[] = @java:Method {

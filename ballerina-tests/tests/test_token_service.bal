@@ -1,9 +1,10 @@
 import ballerina/http;
+import ballerina/log;
 
 const ACCESS_TOKEN_1 = "2YotnFZFEjr1zCsicMWpAA";
-const string keystorePath = "./tests/resources/ballerinaKeystore.p12";
 const string keyStorePassword = "ballerina";
 
+string keystorePath = string `${currentDir}/tests/resources/ballerinaKeystore.p12`;
 public type AuthResponse record {|
     *http:Ok;
     json body?;
@@ -19,7 +20,12 @@ listener http:Listener sts = new (9443, {
 });
 
 service /oauth2 on sts {
+    function init() {
+        log:printInfo("Start the token server");        
+    }
+
     resource function post token(http:Request req) returns AuthResponse {
+        log:printInfo("Executing token endpoint");
         return {
             body: {
                 "access_token": ACCESS_TOKEN_1,
