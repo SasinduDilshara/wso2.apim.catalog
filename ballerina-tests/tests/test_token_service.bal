@@ -4,13 +4,13 @@ import ballerina/log;
 const ACCESS_TOKEN_1 = "2YotnFZFEjr1zCsicMWpAA";
 const string keyStorePassword = "ballerina";
 
-string keystorePath = string `${currentDir}/tests/resources/ballerinaKeystore.p12`;
+string keystorePath = string `${currentDir}${sep}tests${sep}resources${sep}ballerinaKeystore.p12`;
 public type AuthResponse record {|
     *http:Ok;
     json body?;
 |};
 
-listener http:Listener sts = new (9443, {
+listener http:Listener sts = new (9444, {
     secureSocket: {
         key: {
             path: keystorePath,
@@ -21,11 +21,10 @@ listener http:Listener sts = new (9443, {
 
 service /oauth2 on sts {
     function init() {
-        log:printInfo("Start the token server");        
+        log:printInfo("Start the token server on http://localhost:9444");        
     }
 
     resource function post token(http:Request req) returns AuthResponse {
-        log:printInfo("Executing token endpoint");
         return {
             body: {
                 "access_token": ACCESS_TOKEN_1,

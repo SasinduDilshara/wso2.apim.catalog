@@ -2,7 +2,6 @@ import ballerina/http;
 import ballerinax/wso2.apim.catalog as _;
 import ballerinax/wso2.apim.catalog as catalog;
 import ballerina/graphql;
-// import ballerina/websocket;
 
 @graphql:ServiceConfig {}
 service / on new http:Listener(9700) {

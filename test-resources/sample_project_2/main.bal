@@ -1,6 +1,5 @@
 import ballerina/http;
 import ballerinax/wso2.apim.catalog as _;
-import ballerina/graphql;
 
 service /sales0/base on new http:Listener(9200) {
     

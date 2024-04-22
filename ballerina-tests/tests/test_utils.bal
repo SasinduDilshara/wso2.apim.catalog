@@ -1,22 +1,23 @@
-import ballerina/os;
 import ballerina/file;
-import ballerina/log;
-import ballerina/io;
 import ballerina/http;
+import ballerina/io;
+import ballerina/log;
 import ballerina/mime;
+import ballerina/os;
 
 const numOftestSources = 9;
 
-string testResourceDir =  string `${check file:parentPath(file:getCurrentDir())}/test-resources`;
-string bal = "/Users/admin/Desktop/ballerina-lang-clone/ballerina-lang/distribution/zip/jballerina-tools/build/extracted-distributions/jballerina-tools-2201.9.0-SNAPSHOT/bin/bal";
-
+string sep = file:pathSeparator;
+string testResourceDir = string `${check file:parentPath(file:getCurrentDir())}${sep}test-resources`;
 string currentDir = file:getCurrentDir();
-string ballerinaTestDir = string `${check file:parentPath(currentDir)}/ballerina-tests/tests`;
-string artifactPath = string `${ballerinaTestDir}/generated_artifacts`;
-string configsPath = string `${currentDir}/tests/configs`;
-string runConfigsPath = string `${configsPath}/run-configs`;
-string trustStorePath = string `${currentDir}/tests/resources/ballerinaTruststore.p12`;
+string rootDir = check file:parentPath(currentDir);
+string ballerinaTestDir = string `${rootDir}${sep}ballerina-tests${sep}tests`;
+string artifactPath = string `${ballerinaTestDir}${sep}generated_artifacts`;
+string configsPath = string `${currentDir}${sep}tests${sep}configs`;
+string runConfigsPath = string `${configsPath}${sep}run-configs`;
+string trustStorePath = string `${currentDir}${sep}tests${sep}resources${sep}ballerinaTruststore.p12`;
 string trustStoreConfig = string `clientSecureSocketpath="${trustStorePath}"`;
+string bal = string `${rootDir}${sep}target${sep}ballerina-runtime${sep}bin${sep}bal`;
 
 function buildAndRunProjects() returns error? {
     if file:readDir(artifactPath) !is error {
@@ -24,18 +25,18 @@ function buildAndRunProjects() returns error? {
     }
     check file:createDir(artifactPath);
 
-    foreach int i in 0...numOftestSources {
+    foreach int i in 0 ... numOftestSources {
         string projName = string `sample_project_${i}`;
-        string runConfigFile = string `${runConfigsPath}/${projName}/Config.toml`;
+        string runConfigFile = string `${runConfigsPath}/${projName}${sep}Config.toml`;
         string|error runConfigurations = getConfigurations(runConfigFile);
         if runConfigurations is error {
             log:printInfo(string `Error while updating run-configs in :- ${projName}, e = ${runConfigurations.message()}`);
             continue;
         }
 
-        string configFile = string `${configsPath}/${projName}/Config.toml`;
+        string configFile = string `${configsPath}/${projName}${sep}Config.toml`;
         error? updatedRunConfigurations = updateConfigurations(configFile, runConfigurations);
-         if updatedRunConfigurations is error {
+        if updatedRunConfigurations is error {
             log:printInfo(
                 string `Error while getting configs in :- ${projName}, e = ${updatedRunConfigurations.message()}`);
             continue;
@@ -47,7 +48,6 @@ function buildAndRunProjects() returns error? {
             continue;
         }
 
-        log:printInfo(string `Updating configs in :- ${projName}`);
         error? trustStoreConfigResult = updateTrustStoreConfig(configFile, configurations);
         if trustStoreConfigResult is error {
             log:printInfo(
@@ -56,8 +56,10 @@ function buildAndRunProjects() returns error? {
         }
 
         log:printInfo(string `Running Ballerina project:- ${projName}`);
-        os:Process|os:Error process = os:exec({value: string `${bal}`, 
-                    arguments: ["run", string `${testResourceDir}/${projName}`]}, 
+        os:Process|os:Error process = os:exec({
+            value: string `${bal}`,
+            arguments: ["run", string `${testResourceDir}/${projName}`]
+        },
                     BAL_CONFIG_FILES = configFile);
         if process is error {
             log:printInfo(
@@ -65,31 +67,23 @@ function buildAndRunProjects() returns error? {
             continue;
         }
 
-        log:printInfo(string `Waiting for process exit in :- ${projName}`);
         int|os:Error waitForExit = process.waitForExit();
         byte[]|error output = process.output();
         if output is error {
             log:printInfo(
                 string `Error while getting the output of the os process in :- ${projName}, e = ${output.message()}`);
-        } else {
-            log:printInfo(string `Execution results of :- ${projName} - ${check string:fromBytes(output)}}`);
         }
 
         if waitForExit is os:Error {
             log:printInfo(string `Error while running :- ${projName}, e = ${waitForExit.message()}`);
-        } else {
-            log:printInfo(string `Execution of :- ${projName} ends with exit code - ${waitForExit}}`);
         }
 
-        log:printInfo(string `Reverting configs in :- ${projName}`);
         error? configurationsResult = updateConfigurations(configFile, configurations);
         if configurationsResult is error {
             log:printInfo(
                 string `Error while getting configs in :- ${projName}, e = ${configurationsResult.message()}`);
             continue;
         }
-
-        log:printInfo(string `Finished tasks in :- ${projName}`);
     }
 }
 
