@@ -1,21 +1,19 @@
+import ballerina/http;
 import ballerina/jballerina.java;
 import ballerina/oauth2 as _;
-import ballerina/log;
+import ballerina/oauth2;
 
 configurable string serviceUrl = "https://apis.wso2.com/api/service-catalog/v1";
-configurable string user = "?";
-configurable string password = "?";
-configurable string clientId = "?";
-configurable string clientSecret = "?";
+configurable string username = "";
+configurable string password = "";
+configurable string? clientId = ();
+configurable string? clientSecret = ();
 configurable string tokenUrl = "https://localhost:9443/oauth2/token";
 configurable int port = 5050;
 configurable string clientSecureSocketpath = "";
 configurable string clientSecureSocketpassword = "";
-
-final Client apimClient = check new (serviceUrl = serviceUrl, config = {
-    auth: {username: user, password, clientId, clientSecret, tokenUrl, clientConfig: {
-        secureSocket: {cert: {path: clientSecureSocketpath, password: clientSecureSocketpassword}}}}
-    });
+configurable string serverCert = "";
+configurable string[] scopes = ["service_catalog:service_view", "apim:api_view"];
 
 listener Listener 'listener = new Listener(port);
 
@@ -24,6 +22,18 @@ service / on 'listener {
 }
 
 function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
+    Client apimClient = check new (serviceUrl = serviceUrl, config = {
+        auth: {
+            username,
+            password,
+            clientId,
+            clientSecret,
+            scopes,
+            clientConfig: getClientConfig(clientSecureSocketpath, clientSecureSocketpassword)
+        },
+        secureSocket: getServerCert(serverCert)
+    });
+
     boolean errorFound = false;
     error? e = null;
 
@@ -56,7 +66,6 @@ function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
     }
 
     if errorFound {
-        log:printError("Error found while publishing artifacts: ", e);
         return e;
     }
 }
@@ -64,3 +73,18 @@ function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
 isolated function getArtifacts() returns ServiceArtifact[] = @java:Method {
     'class: "io.ballerina.wso2.apim.catalog.ServiceCatalog"
 } external;
+
+function getClientConfig(string clientSecureSocketpath, string clientSecureSocketpassword)
+        returns oauth2:ClientConfiguration {
+    if clientSecureSocketpath == "" || clientSecureSocketpassword == "" {
+        return {secureSocket: {disable: true}};
+    }
+    return {secureSocket: {cert: {path: clientSecureSocketpath, password: clientSecureSocketpassword}}};
+}
+
+function getServerCert(string serverCert) returns http:ClientSecureSocket? {
+    if serverCert == "" {
+        return {cert: serverCert};
+    }
+    return {enable: false};
+}
