@@ -13,7 +13,7 @@ configurable int port = 5050;
 configurable string clientSecureSocketpath = "";
 configurable string clientSecureSocketpassword = "";
 configurable string serverCert = "";
-configurable string[] scopes = ["service_catalog:service_view", "apim:api_view"];
+configurable string[] scopes = ["service_catalog:service_view", "apim:api_view", "service_catalog:service_write"];
 
 listener Listener 'listener = new Listener(port);
 
@@ -51,10 +51,8 @@ function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
                 definitionType: artifact.definitionType,
                 securityType: artifact.securityType,
                 mutualSSLEnabled: artifact.mutualSSLEnabled,
-                md5: artifact.md5,
                 definitionUrl: artifact.definitionUrl
             },
-            definitionFile: {fileContent: definitionFileContent.toBytes(), fileName: name},
             inlineContent: definitionFileContent
         });
 
@@ -83,7 +81,7 @@ function getClientConfig(string clientSecureSocketpath, string clientSecureSocke
 }
 
 function getServerCert(string serverCert) returns http:ClientSecureSocket? {
-    if serverCert == "" {
+    if serverCert != "" {
         return {cert: serverCert};
     }
     return {enable: false};

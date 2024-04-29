@@ -21,7 +21,7 @@ listener http:Listener sts = new (9444, {
 
 service /oauth2 on sts {
     function init() {
-        log:printInfo("Start the token server on http://localhost:9444");        
+        log:printInfo("Start the token server for tests on http://localhost:9444");        
     }
 
     resource function post token(http:Request req) returns AuthResponse {

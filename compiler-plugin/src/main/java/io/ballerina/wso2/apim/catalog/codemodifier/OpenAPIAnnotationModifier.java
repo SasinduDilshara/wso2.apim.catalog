@@ -142,6 +142,8 @@ public class OpenAPIAnnotationModifier implements ModifierTask<SourceModifierCon
             if (isServiceCatalogConfigAnnotationAvailable(annotation)) {
                 serviceCatalogConfigAnnotationUpdated = true;
                 SeparatedNodeList<MappingFieldNode> updatedFields = getUpdatedFields(annotation, openApiDefinition);
+//                MappingConstructorExpressionNode annotationValue =
+//                        annotation.annotValue().get().modify().withFields(updatedFields).apply();
                 MappingConstructorExpressionNode annotationValue =
                         NodeFactory.createMappingConstructorExpressionNode(
                                 NodeFactory.createToken(SyntaxKind.OPEN_BRACE_TOKEN), updatedFields,
@@ -167,6 +169,8 @@ public class OpenAPIAnnotationModifier implements ModifierTask<SourceModifierCon
         SeparatedNodeList<MappingFieldNode> existingFields = annotationValue.fields();
         Token separator = NodeFactory.createToken(SyntaxKind.COMMA_TOKEN);
         boolean openApiDefAvailable = false;
+//        int existingFieldLength = existingFields.size();
+//        int fieldIndex = 0;
         for (MappingFieldNode field : existingFields) {
             if (field instanceof SpecificFieldNode) {
                 String fieldName = ((SpecificFieldNode) field).fieldName().toString();
@@ -176,6 +180,9 @@ public class OpenAPIAnnotationModifier implements ModifierTask<SourceModifierCon
                 }
             }
             fields.add(field);
+//            if (existingFieldLength > 1) {
+////                fields.add(existingFields.getSeparator(fieldIndex++));
+////            }
             fields.add(separator);
         }
         if (openApiDefAvailable) {

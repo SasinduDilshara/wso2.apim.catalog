@@ -105,7 +105,7 @@ public class ServiceCatalog {
         HttpServiceConfig httpServiceConfig = updateHostAndPortAndBasePath(listenerDetails,
                 attachPointDetails, httpAnnotation);
         updateServiceNameAndUrl(artifactValues, httpServiceConfig);
-        updateAnnotationsArtifactValues(artifactValues, annotationDetails, httpAnnotation, env);
+        updateAnnotationsArtifactValues(artifactValues, annotationDetails, httpAnnotation, env, httpServiceConfig);
         updateListenerConfigurations(artifactValues, listenerDetails);
         updateMd5(artifactValues);
     }
@@ -169,8 +169,7 @@ public class ServiceCatalog {
                 StringUtils.fromString(new StringBuilder().append(httpServiceConfig.host).
                         append(COLON).append(httpServiceConfig.port).append(basePath).toString()));
         artifactValues.put(StringUtils.fromString(DEFINITION_URL),
-                StringUtils.fromString(new StringBuilder().append(httpServiceConfig.host).
-                        append(COLON).append(httpServiceConfig.port).append(basePath).toString()));
+                StringUtils.fromString(httpServiceConfig.definitionUrl));
     }
 
     private static HttpServiceConfig updateHostAndPortAndBasePath(Object listenerDetails, Object attachPointDetails,
@@ -190,12 +189,12 @@ public class ServiceCatalog {
 
     private static void updateAnnotationsArtifactValues(BMap<BString, Object> artifactValues,
                                                         Object annotationDetail, BMap<BString, Object> httpAnnotation,
-                                                        Environment env) {
+                                                        Environment env, HttpServiceConfig httpServiceConfig) {
         BMap<BString, Object> annotations = (BMap<BString, Object>) annotationDetail;
         BMap<BString, Object> moduleAnnotation = getModuleAnnotation(annotations);
 
         if (moduleAnnotation != null) {
-            updateModuleAnnotationDetails(moduleAnnotation, artifactValues);
+            updateModuleAnnotationDetails(moduleAnnotation, artifactValues, httpServiceConfig);
         } else {
             artifactValues.put(StringUtils.fromString(VERSION), StringUtils
                     .fromString(env.getCurrentModule().getMajorVersion()));
@@ -204,7 +203,7 @@ public class ServiceCatalog {
             artifactValues.put(StringUtils.fromString(DESCRIPTION),
                     StringUtils.fromString(DEFAULT_STRING));
             artifactValues.put(StringUtils.fromString(SERVICE_KEY),
-                    StringUtils.fromString(DEFAULT_STRING));
+                    StringUtils.fromString(httpServiceConfig.definitionUrl));
         }
 
         if (httpAnnotation != null) {
@@ -217,7 +216,8 @@ public class ServiceCatalog {
     }
 
     private static void updateModuleAnnotationDetails(BMap<BString, Object> moduleAnnotation,
-                                                      BMap<BString, Object> artifactValues) {
+                                                      BMap<BString, Object> artifactValues,
+                                                      HttpServiceConfig httpServiceConfig) {
         OpenAPI openApiDef = getOpenApiDefinition(moduleAnnotation);
         String openApiDefVersion = openApiDef.getInfo().getVersion();
         String description = openApiDef.getInfo().getDescription();
@@ -230,18 +230,23 @@ public class ServiceCatalog {
         artifactValues.put(StringUtils.fromString(DESCRIPTION),
                 StringUtils.fromString(description != null ? description : DEFAULT_STRING));
         artifactValues.put(StringUtils.fromString(SERVICE_KEY),
-                StringUtils.fromString(title != null ? title : DEFAULT_STRING + COLON + openApiDefVersion));
+                StringUtils.fromString(title != null ?
+                        title + COLON + httpServiceConfig.definitionUrl
+                        : DEFAULT_STRING + COLON + httpServiceConfig.definitionUrl));
     }
 
     static class HttpServiceConfig {
         String host;
         String port;
         String basePath;
+        String definitionUrl;
 
         HttpServiceConfig(String host, String port, String basePath) {
             this.host = host;
             this.port = port;
             this.basePath = basePath;
+            this.definitionUrl = new StringBuilder().append(host).
+                    append(COLON).append(port).append(basePath).toString();
         }
     }
 }
