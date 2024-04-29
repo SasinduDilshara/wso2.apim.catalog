@@ -2,6 +2,7 @@ import ballerina/http;
 import ballerina/jballerina.java;
 import ballerina/oauth2 as _;
 import ballerina/oauth2;
+import ballerina/log;
 
 configurable string serviceUrl = "https://apis.wso2.com/api/service-catalog/v1";
 configurable string username = "";
@@ -22,9 +23,10 @@ service / on 'listener {
 }
 
 function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
-    Client apimClient = check new (serviceUrl = serviceUrl, config = {
+    Client|error apimClient = new (serviceUrl = serviceUrl, config = {
         auth: {
             username,
+            tokenUrl,
             password,
             clientId,
             clientSecret,
@@ -33,6 +35,11 @@ function publishArtifacts(ServiceArtifact[] artifacts) returns error? {
         },
         secureSocket: getServerCert(serverCert)
     });
+
+    if apimClient is error {
+        log:printError("Error occurred while creating the client", apimClient);
+        return apimClient;
+    }
 
     boolean errorFound = false;
     error? e = null;
@@ -74,7 +81,7 @@ isolated function getArtifacts() returns ServiceArtifact[] = @java:Method {
 
 function getClientConfig(string clientSecureSocketpath, string clientSecureSocketpassword)
         returns oauth2:ClientConfiguration {
-    if clientSecureSocketpath == "" || clientSecureSocketpassword == "" {
+    if clientSecureSocketpath == "" {
         return {secureSocket: {disable: true}};
     }
     return {secureSocket: {cert: {path: clientSecureSocketpath, password: clientSecureSocketpassword}}};
