@@ -1,7 +1,6 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
-import ballerina/mime;
 
 string artifactPath = string `${ballerinaTestDir}${sep}generated_artifacts`;
 
@@ -147,19 +146,4 @@ service / on new http:Listener(8088) {
         check io:fileWriteJson(self.artifactJsonFilename, self.artifacts.toJson());
         return returnDummyResponse();
     }
-}
-
-function traverseMultiPartRequest(http:Request req) returns ServiceSchema|error {
-    mime:Entity[] bodyParts = check req.getBodyParts();
-    Service serviceMetadata = check (check bodyParts[0].getJson()).cloneWithType();
-    string inlineContent = check bodyParts[1].getText();
-    return {
-        serviceMetadata,
-        inlineContent
-    };
-}
-
-function returnDummyResponse() returns error {
-    // Return error to terminate the test process
-    return error("Successfully processed the request");
 }
