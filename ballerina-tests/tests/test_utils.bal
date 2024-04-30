@@ -1,8 +1,10 @@
-import ballerina/os;
+import ballerina/file;
+import ballerina/http;
+import ballerina/io;
 import ballerina/log;
 import ballerina/mime;
-import ballerina/http;
-import ballerina/file;
+import ballerina/os;
+import ballerina/test;
 
 string sep = file:pathSeparator;
 string currentDir = file:getCurrentDir();
@@ -12,9 +14,9 @@ string bal = string `${rootDir}${sep}target${sep}ballerina-runtime${sep}bin${sep
 
 function runOSCommand(string projName, string projPath, string configFilePath) returns error? {
     os:Process|os:Error process = os:exec({
-            value: string `${bal}`, 
-            arguments: ["run", string `${projPath}`]
-        }, 
+        value: string `${bal}`,
+        arguments: ["run", string `${projPath}`]
+    },
         BAL_CONFIG_FILES = configFilePath
     );
 
@@ -27,7 +29,14 @@ function runOSCommand(string projName, string projPath, string configFilePath) r
     int|os:Error waitForExit = process.waitForExit();
 
     if waitForExit is os:Error {
-        // expected behaviour in the tests.
+        log:printInfo(
+            string `Error while waiting for exit in :- ${projName}, e = ${waitForExit.message()}`);
+        return waitForExit;
+    } else {
+        string output = check string:fromBytes(check process.output());
+        if waitForExit != 0 {
+            return error(string `${output}`);
+        }
     }
 }
 
@@ -56,4 +65,56 @@ function traverseMultiPartRequest(http:Request req) returns ServiceSchema|error 
 function returnDummyResponse() returns error {
     // Return error to terminate the test process
     return error("Successfully processed the request");
+}
+
+function readAndValidateArtifacts(string file, int index, string basePathPrefix = "/sales") {
+    json|error artifactJson = io:fileReadJson(string `${artifactPath}/${file}`);
+
+    if artifactJson is error {
+        test:assertFail(string `Error while reading the ${file}`);
+    }
+
+    ServiceSchema[]|error artifacts = artifactJson.cloneWithType();
+    if artifacts is error {
+        test:assertFail(string `Error while cloning the artifacts in ${file}`);
+    }
+
+    validateArtifacts(artifacts, index, basePathPrefix);
+}
+
+function validateArtifacts(ServiceSchema[] artifacts, int index, string basePathPrefix) {
+    string assertPath = string `${ballerinaTestDir}${sep}asserts`;
+    string assertFile = string `assert_${index}.json`;
+    json|error assertJson = io:fileReadJson(string `${assertPath}/${assertFile}`);
+
+    if assertJson is error {
+        test:assertFail(string `Error while reading the ${assertFile}`);
+    }
+
+    map<ServiceSchema>|error assertArtifacts = assertJson.cloneWithType();
+    if assertArtifacts is error {
+        test:assertFail(
+            string `Error while cloning the assertArtifacts in ${assertFile}, error = ${assertArtifacts.message()}`
+        );
+    }
+    
+    foreach ServiceSchema schema in artifacts {
+        string serviceKey = <string> (schema.serviceMetadata.serviceKey);
+        if !assertArtifacts.hasKey(serviceKey) {
+            test:assertFail(string `Service key ${serviceKey} not found in assert file ${assertFile}`);
+        }
+
+        ServiceSchema assertSchema = <ServiceSchema> assertArtifacts[serviceKey];
+        if isNameStartWithSamePrefix(assertSchema.serviceMetadata.name, 
+                schema.serviceMetadata.name, basePathPrefix) {
+            assertSchema.serviceMetadata.name = schema.serviceMetadata.name;
+            test:assertEquals(assertSchema, schema);
+        } else {
+            test:assertFail(string `Service name ${schema.serviceMetadata.name} not start with ${basePathPrefix}`);
+        }
+    }
+}
+
+function isNameStartWithSamePrefix(string assertSchemaName, string schemaName, string basePathPrefix) returns boolean {
+    return assertSchemaName.startsWith(basePathPrefix) && schemaName.startsWith(basePathPrefix);
 }
