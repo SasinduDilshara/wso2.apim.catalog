@@ -117,4 +117,21 @@ function testSingleService10() returns error? {
     int index = 9;
     error? result = runOSCommand(getProjName(index), getProjPath(index), getConfigFilePath(index));
     test:assertTrue(result is error);
+    test:assertTrue((<error>result).message().includes("Something wrong with the connection"));
+}
+
+@test:Config{}
+function testSingleService11() returns error? {
+    int index = 10;
+    error? result = runOSCommand(getProjName(index), getProjPath(index), getConfigFilePath(index));
+    test:assertTrue(result is error);
+    test:assertTrue((<error>result).message().includes("Failed to call the token endpoint"));
+}
+
+@test:Config{}
+function testSingleService12() returns error? {
+    int index = 11;
+    error? result = runOSCommand(getProjName(index), getProjPath(index), getConfigFilePath(index));
+    test:assertTrue(result is error);
+    test:assertTrue((<error>result).message().includes("Unauthorized"));
 }

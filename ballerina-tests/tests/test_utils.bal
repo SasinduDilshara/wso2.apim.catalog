@@ -33,7 +33,7 @@ function runOSCommand(string projName, string projPath, string configFilePath) r
             string `Error while waiting for exit in :- ${projName}, e = ${waitForExit.message()}`);
         return waitForExit;
     } else {
-        string output = check string:fromBytes(check process.output());
+        string output = check string:fromBytes(check process.output(io:stderr));
         if waitForExit != 0 {
             return error(string `${output}`);
         }
@@ -62,9 +62,14 @@ function traverseMultiPartRequest(http:Request req) returns ServiceSchema|error 
     };
 }
 
-function returnDummyResponse() returns error {
+function returnDummyResponse(string message = "Return 500 Status code after completing the task") 
+            returns http:InternalServerError {
     // Return error to terminate the test process
-    return error("Successfully processed the request");
+    return {
+        body: {
+            message
+        }
+    };
 }
 
 function readAndValidateArtifacts(string file, int index, string basePathPrefix = "/sales") {
