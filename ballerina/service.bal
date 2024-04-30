@@ -1,6 +1,5 @@
 import ballerina/http;
 import ballerina/jballerina.java;
-import ballerina/oauth2 as _;
 import ballerina/oauth2;
 import ballerina/log;
 

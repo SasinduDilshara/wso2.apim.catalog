@@ -176,7 +176,7 @@ public class ServiceCatalog {
                                                                   BMap<BString, Object> httpAnnotation) {
         BArray attachPoints = (BArray) attachPointDetails;
 
-        String basePath = generateBasePath(attachPoints.getStringArray());
+        String basePath = generateBasePath(attachPoints);
         String port = getPortValue(listenerDetails);
         String host = getHostname(httpAnnotation);
         return new HttpServiceConfig(host, port, basePath);

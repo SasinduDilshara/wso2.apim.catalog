@@ -85,7 +85,12 @@ public class Utils {
         return new OpenAPIParser().readContents(string, null, parseOptions).getOpenAPI();
     }
 
-    public static String generateBasePath(String[] attachPoints) {
+    public static String generateBasePath(BArray attachPointsArray) {
+        if (attachPointsArray == null) {
+            return SLASH;
+        }
+
+        String[] attachPoints = attachPointsArray.getStringArray();
         if (attachPoints.length == 0) {
             return SLASH;
         }
