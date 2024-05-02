@@ -21,13 +21,13 @@ service /sales0 on new http:Listener(9502) {
 }
 
 @openapi:ServiceInfo {
-    version: "1.0.0"
+    'version: "1.0.0"
 }
 service /sales0 on new http:Listener(9503) {
 }
 
 @openapi:ServiceInfo {
-    version: ("4.1.2")
+    'version: "4.1.2"
 }
 @http:ServiceConfig {
     host: "www.example.com"
@@ -35,17 +35,18 @@ service /sales0 on new http:Listener(9503) {
 service /sales0 on new http:Listener(9504) {
 }
 
-@http:ServiceConfig {
-    host: "www.example.com"
-}
-@openapi:ServiceInfo {
-    version: ()
-}
-service /sales0 on new http:Listener(9505) {
-}
+// This test case disable due to issue:- https://github.com/ballerina-platform/ballerina-library/issues/6477
+// @http:ServiceConfig {
+//     host: "www.example.com"
+// }
+// @openapi:ServiceInfo {
+//     'version: ()
+// }
+// service /sales0 on new http:Listener(9505) {
+// }
 
 @openapi:ServiceInfo {
-    version: ""
+    'version: ""
 }
 service /sales0 on new http:Listener(9506) {
 }

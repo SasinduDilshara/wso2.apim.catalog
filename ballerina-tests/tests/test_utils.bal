@@ -99,7 +99,7 @@ function validateArtifacts(ServiceSchema[] artifacts, int index, string basePath
     map<ServiceSchema>|error assertArtifacts = assertJson.cloneWithType();
     if assertArtifacts is error {
         test:assertFail(
-            string `Error while cloning the assertArtifacts in ${assertFile}, error = ${assertArtifacts.message()}`
+            string `Error while cloning the assertArtifacts in ${assertFile}, error = ${assertArtifacts.message()}, detail = ${assertArtifacts.detail().toBalString()}`
         );
     }
     
