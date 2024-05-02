@@ -1,1 +1,1 @@
-wso2.apim.catalog
+This project contains built-in Ballerina library to automate the service publishing process for APIM service catalog.
