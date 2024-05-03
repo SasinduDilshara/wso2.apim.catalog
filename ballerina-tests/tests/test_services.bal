@@ -64,7 +64,6 @@ function testSingleService4() returns error? {
     error? result = runOSCommand(getProjName(index), getProjPath(index), getConfigFilePath(index));
     test:assertTrue(result is error);
     readAndValidateArtifacts(file, index);
-    
 }
 
 @test:Config{}
