@@ -1,1 +1,1 @@
-This project contains built-in Ballerina library to automate the service publishing process for APIM service catalog.
+This repository is for Including ballerina service management tools for publishing service data to WSO2 API manager service catalogs.
