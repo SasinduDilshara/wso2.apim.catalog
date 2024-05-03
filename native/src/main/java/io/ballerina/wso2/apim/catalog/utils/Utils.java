@@ -28,7 +28,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 import static io.ballerina.wso2.apim.catalog.utils.Constants.AUTH;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.BASIC;
@@ -50,8 +49,6 @@ import static io.ballerina.wso2.apim.catalog.utils.Constants.SLASH;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.UTF8;
 
 public class Utils {
-    private static SecureRandom random = new SecureRandom();
-
     public static String createMd5Hash(String string) {
         try {
             byte[] bytesOfMessage = string.getBytes(UTF8);
@@ -130,16 +127,6 @@ public class Utils {
             }
         }
         return null;
-    }
-
-    public static String generateRandomHash(int length) {
-        byte[] bytes = new byte[length];
-        random.nextBytes(bytes);
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X", b)); // Convert each byte to hex string
-        }
-        return sb.toString();
     }
 
     public static BMap<BString, Object> getHttpAnnotation(BMap<BString, Object> annotations) {

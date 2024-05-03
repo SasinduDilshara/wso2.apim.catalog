@@ -41,7 +41,6 @@ import java.util.HashMap;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.HTTP_ORG_NAME;
 import static io.ballerina.wso2.apim.catalog.utils.Utils.createMd5Hash;
 import static io.ballerina.wso2.apim.catalog.utils.Utils.generateBasePath;
-import static io.ballerina.wso2.apim.catalog.utils.Utils.generateRandomHash;
 import static io.ballerina.wso2.apim.catalog.utils.Utils.getDefinitionType;
 import static io.ballerina.wso2.apim.catalog.utils.Utils.getHostname;
 import static io.ballerina.wso2.apim.catalog.utils.Utils.getHttpAnnotation;
@@ -64,7 +63,6 @@ import static io.ballerina.wso2.apim.catalog.utils.Constants.NONE;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.PORT;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.SECURE_SOCKET;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.SECURITY_TYPE;
-import static io.ballerina.wso2.apim.catalog.utils.Constants.SEED;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.SERVICE_KEY;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.SERVICE_URL;
 import static io.ballerina.wso2.apim.catalog.utils.Constants.VERSION;
@@ -175,8 +173,7 @@ public class ServiceCatalog {
 
     private static void updateServiceName(BMap<BString, Object> artifactValues, HttpServiceConfig httpServiceConfig) {
         artifactValues.put(StringUtils.fromString(NAME),
-                StringUtils.fromString(new StringBuilder()
-                        .append(httpServiceConfig.basePath).append(generateRandomHash(SEED)).toString()));
+                StringUtils.fromString(httpServiceConfig.basePath));
     }
 
     private static void updateServiceUrl(BMap<BString, Object> artifactValues, HttpServiceConfig httpServiceConfig) {

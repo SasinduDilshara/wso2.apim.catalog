@@ -158,12 +158,8 @@ public class OpenAPIAnnotationModifier implements ModifierTask<SourceModifierCon
             if (isServiceCatalogConfigAnnotationAvailable(annotation)) {
                 serviceCatalogConfigAnnotationUpdated = true;
                 SeparatedNodeList<MappingFieldNode> updatedFields = getUpdatedFields(annotation, openApiDefinition);
-//                MappingConstructorExpressionNode annotationValue =
-//                        annotation.annotValue().get().modify().withFields(updatedFields).apply();
                 MappingConstructorExpressionNode annotationValue =
-                        NodeFactory.createMappingConstructorExpressionNode(
-                                NodeFactory.createToken(SyntaxKind.OPEN_BRACE_TOKEN), updatedFields,
-                                NodeFactory.createToken(SyntaxKind.CLOSE_BRACE_TOKEN));
+                        annotation.annotValue().get().modify().withFields(updatedFields).apply();
                 annotation = annotation.modify().withAnnotValue(annotationValue).apply();
             }
             updatedAnnotations = updatedAnnotations.add(annotation);
@@ -185,21 +181,23 @@ public class OpenAPIAnnotationModifier implements ModifierTask<SourceModifierCon
         SeparatedNodeList<MappingFieldNode> existingFields = annotationValue.fields();
         Token separator = NodeFactory.createToken(SyntaxKind.COMMA_TOKEN);
         boolean openApiDefAvailable = false;
-//        int existingFieldLength = existingFields.size();
-//        int fieldIndex = 0;
+        int existingFieldLength = existingFields.size();
+        int fieldIndex = 0;
         for (MappingFieldNode field : existingFields) {
             if (field instanceof SpecificFieldNode) {
                 String fieldName = ((SpecificFieldNode) field).fieldName().toString();
                 if (Constants.OPEN_API_DEFINITION_FIELD.equals(fieldName.trim())) {
                     openApiDefAvailable = true;
                     field = createOpenApiDefinitionField(openAPIDef);
+                    fields.add(field);
+                    fields.add(separator);
+                    continue;
                 }
             }
             fields.add(field);
-//            if (existingFieldLength > 1) {
-////                fields.add(existingFields.getSeparator(fieldIndex++));
-////            }
-            fields.add(separator);
+            if (existingFieldLength > 1 && fieldIndex < existingFieldLength - 1) {
+                fields.add(existingFields.getSeparator(fieldIndex++));
+            }
         }
         if (openApiDefAvailable) {
             if (fields.size() != 0) {
